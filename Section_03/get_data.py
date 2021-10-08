@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import LancasterStemmer, WordNetLemmatizer
 
 df = pd.read_csv("/Users/doukkim/Section_03/Project/tweet_emotions.csv")
+#csv file source URI: https://www.kaggle.com/pashupatigupta/emotion-detection-from-text
 
 def text_preprocessing_platform(df, text_col, remove_stopwords=True):
     ## Define functions for individual steps
