@@ -7,7 +7,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import LancasterStemmer, WordNetLemmatizer
 
-df = pd.read_csv("/Users/doukkim/Section_03/Project/tweet_emotions.csv")
+df = pd.read_csv("/Users/doukkim/Section_03/Section_Project/Section_03/tweet_emotions.csv")
 #csv file source URI: https://www.kaggle.com/pashupatigupta/emotion-detection-from-text
 
 def text_preprocessing_platform(df, text_col, remove_stopwords=True):
@@ -150,4 +150,4 @@ processed_df_drop["anger"] = anger_list
 
 processed_df_drop.reset_index(inplace = True, drop = True)
 
-processed_df_drop.to_csv("/Users/doukkim/Section_03/Project/emotions.csv")
+processed_df_drop.to_csv("/Users/doukkim/Section_03/Section_Project/Section_03/emotions.csv")
