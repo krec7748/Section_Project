@@ -7,8 +7,8 @@ def get_emotion(data, sadness_list = [], joy_list = [], fear_list = [], disgust_
     #IBM_Natural_Language_Understanding API >>> Extracting emotions from text
     #data = list or Series ex) data = ["I love an apple.", "I hate the smell of cigarettes."]
     
-    API_KEY = "Mvol2ZlsQFok7RAf72KG5NFs4ehiEDjIhrqKx3BeiFAi"
-    URL = "https://api.kr-seo.natural-language-understanding.watson.cloud.ibm.com/instances/f0484008-e8aa-4564-afa9-6e3d7f51639b"
+    API_KEY = "_" #비공개
+    URL = "_" #비공개
 
     authenticator = IAMAuthenticator(API_KEY)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
