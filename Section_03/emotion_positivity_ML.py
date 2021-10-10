@@ -1,5 +1,4 @@
 import pandas as pd
-from pandas.core.frame import DataFrame
 import pickle
 
 #데이터 불러오기
@@ -17,17 +16,31 @@ def reduce_sentiment_type_4(string):
     elif string in ["anger", "hate"]:
         return "very negative"
     else:
-        return string
+        return "ambiguous"
 
 df_emotion["sentiment"] = df_emotion["sentiment"].apply(reduce_sentiment_type_4)
 
+
+#data cleaning
+query_01 = "(joy > 0.6) and (sentiment == 'negative')"
+df_emotion_drop = df_emotion.drop(df_emotion.query(query_01).index, axis = 0)
+
+query_02 = "(sadness > 0.6) and (sentiment == 'positive')"
+df_emotion_drop = df_emotion_drop.drop(df_emotion_drop.query(query_02).index, axis = 0)
+
+query_03 = "(anger > 0.6) and (sentiment == 'positive')"
+df_emotion_drop = df_emotion_drop.drop(df_emotion_drop.query(query_03).index, axis = 0)
+
+query_04 = "(disgust > 0.7) and (sentiment == 'positive')"
+df_emotion_drop = df_emotion_drop.drop(df_emotion_drop.query(query_04).index, axis = 0)
+
 #분석
 target = "sentiment"
-features = df_emotion.drop(target, axis = 1).columns
+features = df_emotion_drop.drop(target, axis = 1).columns
 
 ##데이터 셋 나누기
 from sklearn.model_selection import train_test_split
-train, test = train_test_split(df_emotion, test_size = 0.2, random_state = 1, stratify = df_emotion[target])
+train, test = train_test_split(df_emotion_drop, test_size = 0.2, random_state = 1, stratify = df_emotion_drop[target])
 train, val = train_test_split(train, test_size = 0.2, random_state = 1, stratify = train[target])
 
 X_train = train[features]
@@ -39,16 +52,9 @@ y_test = test[target]
 
 ##학습
 #필요한 라이브러리 불러오기
-from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.metrics import accuracy_score, classification_report
-
-#표준화
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-X_test = scaler.transform(X_test)
+from sklearn.metrics import accuracy_score
 
 #Model 생성
 #RandomForestClassifier
@@ -62,13 +68,9 @@ forest = RandomForestClassifier(random_state = 1
 one_rest_forest = OneVsRestClassifier(forest, n_jobs=-1)
 
 #모델 학습
-forest.fit(X_train, y_train)
 one_rest_forest.fit(X_train, y_train)
 
 #예측값 도출
-y_pred_forest_train = forest.predict(X_train)
-y_pred_forest_val = forest.predict(X_val)
-
 y_pred_onerest_forest_train = one_rest_forest.predict(X_train)
 y_pred_onerest_forest_val = one_rest_forest.predict(X_val)
 
@@ -76,32 +78,17 @@ y_pred_onerest_forest_val = one_rest_forest.predict(X_val)
 #평가
 def evaluate_model ():
     #predict
-    y_pred_forest_train = forest.predict(X_train)
-    y_pred_forest_val = forest.predict(X_val)
-    y_pred_forest_test = forest.predict(X_test)
-
     y_pred_onerest_forest_train = one_rest_forest.predict(X_train)
     y_pred_onerest_forest_val = one_rest_forest.predict(X_val)
     y_pred_onerest_forest_test = one_rest_forest.predict(X_test)
 
     #evaluate accuracy
-    forest_train_accuracy = accuracy_score(y_train, y_pred_forest_train)
-    forest_val_accuracy = accuracy_score(y_val, y_pred_forest_val)
-    forest_test_accuracy = accuracy_score(y_test, y_pred_forest_test)
-    forest_val_report = classification_report(y_val, y_pred_forest_val)
-
     onerest_forest_train_accuracy = accuracy_score(y_train, y_pred_onerest_forest_train)
     onerest_forest_val_accuracy = accuracy_score(y_val, y_pred_onerest_forest_val)
     one_rest_forest_test_accuracy = accuracy_score(y_test, y_pred_onerest_forest_test)
-    onerest_forest_val_report = classification_report(y_val, y_pred_onerest_forest_val)
 
     #return
-    if forest_val_accuracy >= onerest_forest_val_accuracy:
-        print("RandomForest의 train, val, test의 accuracy와 classification report(validation data set)가 반환됩니다.")
-        return forest_train_accuracy, forest_val_accuracy, forest_test_accuracy, forest_val_report
-    else:
-        print("OneVsRestRandomForest의 train, val, test의 accuracy와 classification report(validation data set)가 반환됩니다.")
-        return onerest_forest_train_accuracy, onerest_forest_val_accuracy, one_rest_forest_test_accuracy, onerest_forest_val_report
+    return onerest_forest_train_accuracy, onerest_forest_val_accuracy, one_rest_forest_test_accuracy
 
 
 #Confusion Matrix
@@ -157,7 +144,6 @@ def return_predict_emotion_positivity(data):
             "anger": anger_list}
     
     df_X = pd.DataFrame(data)
-    #df_X_scaled = scaler.transform(df_X)
 
     y_pred = one_rest_forest.predict(df_X)
     y_pred_list = y_pred.tolist()
@@ -167,4 +153,15 @@ def return_predict_emotion_positivity(data):
 
     return df_X
 
-pickle.dump(forest, open("RandomForest.pkl", "wb"))
+#머신러닝 결과데이터 저장
+df = pd.read_csv("/Users/doukkim/Section_03/Section_Project/Section_03/emotions.csv", index_col = [0])
+
+#결과데이터 삽입
+df_drop = df.drop(["tweet_id", "content", "sentiment"], axis = 1)
+df["sentiment"] = one_rest_forest.predict(df_drop)
+
+df.drop("tweet_id", axis = 1, inplace = True)
+df.reset_index(inplace = True, drop = True)
+df.to_csv("/Users/doukkim/Section_03/Section_Project/Section_03/emotions_result.csv")
+
+pickle.dump(one_rest_forest, open("RandomForest.pkl", "wb")) #훈련한 모델에 대한 pickle file 생성
