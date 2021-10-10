@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>How do you feel</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#!">Extraction emotions from Natural language</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Header - set the background image for the header in the line below-->
+        <header class="py-5 bg-image-full" style="background-image: url('https://mblogthumb-phinf.pstatic.net/20140612_247/leonjuhee_1402576809552Q1tYw_JPEG/1.jpg?type=w800'); background-size: contain; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000">
+            <h1 class="text-center my-5 text-white fw-bolder;" style = "height: 5em">How do you feel?</h1>
+        </header>
+        <!-- Content section-->
+        <section class="py-5">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2>You can get emotions from Natural Language</h2>
+                        <p class="lead">Extract the emotions that melted in the sentence and output them in the json data type.</p>
+                        <label for="exampleDataList" class="form-label">Please enter only English:</label>
+                        <form action="predict" name="textprint">
+                            <input class="form-control form-control-lg" id='input' name='text' type='text' placeholder="ex) I love you.">
+                            <a id="passwordHelpBlock" class="form-text">If there is Internal Server Error(500) after shifting the page, please contact "rec7748@gmail.com"</a>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <input type='submit' class="btn btn-primary me-md-2" value="Get the result">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Image element - set the background image for the header in the line below-->
+        <div class="py-5 bg-image-full" style="background-image: url('https://source.unsplash.com/4ulffa6qoKA/1200x800')">
+            <!-- Put anything you want here! The spacer below with inline CSS is just for demo purposes!-->
+            <div style="height: 20rem"></div>
+        </div>
+        <!-- Content section-->
+        <section class="py-5">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <h2>Extraction emotions from Natural language</h2>
+                        <p class="lead">The background images used in this template are sourced from Unsplash and are open source and free to use.</p>
+                        <p class="mb-0">I can't tell you how many people say they were turned off from science because of a science teacher that completely sucked out all the inspiration and enthusiasm they had for the course.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Kim Do Uk / [rec7748@gmail.com] All rights reserved.</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    </body>
+</html>
