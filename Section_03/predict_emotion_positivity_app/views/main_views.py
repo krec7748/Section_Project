@@ -1,12 +1,15 @@
 import csv
+import os
 import pandas as pd
 from flask import Blueprint, render_template, request
 from get_emotion import get_emotion
 import pickle
 import psycopg2
 
+CSV_FILEPATH = os.path.join(os.getcwd(), 'emotions_result.csv') 
+
 def import_data():
-  with open("/Users/doukkim/Section_03/Section_Project/Section_03/emotions_result.csv", newline='') as csvfile:
+  with open(CSV_FILEPATH, newline='') as csvfile:
     dataset = csv.DictReader(csvfile)
     user_list = []
     for row in dataset:
@@ -45,9 +48,9 @@ def return_predict_emotion_positivity(text):
     df_new = pd.concat([df_text_info, df_for_predict], axis = 1)
 
     #결과데이터 삽입(local)
-    df_ori = pd.read_csv("/Users/doukkim/Section_03/Section_Project/Section_03/emotions_result.csv", index_col = [0])
+    df_ori = pd.read_csv(CSV_FILEPATH, index_col = [0])
     df_ori_append = df_ori.append(df_new, ignore_index = True)
-    df_ori_append.to_csv("/Users/doukkim/Section_03/Section_Project/Section_03/emotions_result.csv")
+    df_ori_append.to_csv(CSV_FILEPATH)
 
     #결과데이터 삽입(DB)
     host = "lallah.db.elephantsql.com"
@@ -87,6 +90,7 @@ def return_predict_emotion_positivity(text):
 main_bp = Blueprint('main', __name__)
 predict_bp = Blueprint("predict", __name__)
 db_bp = Blueprint("db", __name__)
+db_sentiment_bp = Blueprint("db_sentiment", __name__ )
 
 @main_bp.route('/')
 def index():
@@ -152,3 +156,19 @@ def get_db():
     connection.close()
 
     return json.dumps(json_data)
+
+@db_sentiment_bp.route("/db_sentiment")
+def get_db_sentiment():
+  from predict_emotion_positivity_app.views.main_views import get_db
+  import json
+  from urllib.parse import unquote
+  sentiment = request.args.get("sentiment", None)
+  json_data = json.loads(get_db())
+
+  db_list = []
+  for data in json_data:
+    sentiment = unquote(sentiment)
+    if data[0]["sentiment"] == sentiment:
+      db_list.append(data[0])
+  
+  return json.dumps(db_list)

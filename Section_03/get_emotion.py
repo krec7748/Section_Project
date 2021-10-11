@@ -13,8 +13,8 @@ def get_emotion(data):
     disgust_list = []
     anger_list = []
     
-    API_KEY = "JTc1E1rgxjWb4pQv_DpaajRzCpWp7zLY-bAYR9nf4v3-"
-    URL = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/b8eba1c1-126f-49f3-b1eb-9e187b9db2e7"
+    API_KEY = "aclv5wejg3UhF95Gh1tC7TjPJ3jTiqp2pRmanJclz_jZ"
+    URL = "https://api.kr-seo.natural-language-understanding.watson.cloud.ibm.com/instances/4494a523-aa63-4634-84d5-392ebc8e6063"
 
     authenticator = IAMAuthenticator(API_KEY)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
